@@ -1,0 +1,25 @@
+{
+  "options": {
+    "paths": {
+      "root": "/usr/src/app/node_modules/tileserver-gl-styles",
+      "fonts": "fonts",
+      "styles": "/data/styles",
+      "mbtiles": "/data/mbtiles"
+    }
+  },
+  "styles": {
+    "bassin-niger": {
+      "style": "bnstyle.json",
+      "serve_rendered": true,
+      "tilejson": {
+        "type": "overlay",
+        "bounds":[-10.823977,4.279819,14.270875,17.067493]
+      }
+    }
+  },
+  "data": {
+    "bn-rivers": {
+      "mbtiles": "bn-rivers.mbtiles"
+    }
+  }
+}

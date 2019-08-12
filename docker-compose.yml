@@ -1,0 +1,62 @@
+version: '2'
+services:
+  bn-backend:
+    image: pigeosolutions/bn-backend:20190529-27df19d7
+    environment:
+      SOURCES_CONFIG_FILE: /conf/sources.ini
+      FLASK_CONFIGURATION: staging
+      DEFAULT_NEARBY_LIMIT: '10'
+    volumes:
+    - /home/projects/hydrosatniger/backend/conf:/conf
+    - /home/projects/hydrosatniger/data:/mnt/data
+    - /home/projects/hydrosatniger/ftp_data:/mnt/ftp_data
+    labels:
+      - "traefik.port=5000"
+      - "traefik.backend=bn-backend"
+      - "traefik.frontend.rule=Host:hydrosatniger.pigeosolutions.fr;Path:/api/v1/sources"
+  traefik:
+    image: traefik
+    command: --web --docker --logLevel=DEBUG
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+    - /home/projects/hydrosatniger/traefik/traefik.toml:/etc/traefik/traefik.toml
+    - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      traefik.domain: "hydrosatniger.pigeosolutions.fr"
+  ssh:
+    image: mopnaej/sshd-compact:latest
+    environment:
+      SSH_USERS: jpommier:1000:2000, ird:1001:2000
+      PROJECTID: hydroweb-abn
+    volumes:
+    - /home/projects/hydrosatniger/sshd/config:/etc/ssh
+    - /home/projects/hydrosatniger/sshd/home:/home
+    - /home/projects/hydrosatniger/ftp_data:/ftp_data/
+    - /home/projects/hydrosatniger/sshd/authorized_keys:/etc/authorized_keys
+    ports:
+      - 2262:22/tcp
+    labels:
+      - "traefik.port=22"
+      - "traefik.protocol=tcp"
+      - "traefik.backend=ssh"
+      - "traefik.frontend.rule=Host:hydrosatniger.pigeosolutions.fr"
+  tileserver-gl:
+    image: klokantech/tileserver-gl:v3
+    volumes:
+    - /home/projects/hydrosatniger/tileserver-gl:/data
+    ports:
+    - 81:80/tcp
+    labels:
+      - "traefik.port=81"
+      - "traefik.backend=tileserver"
+      - "traefik.frontend.rule=Host:hydrosatniger.pigeosolutions.fr"
+  bn-frontend:
+    image: pigeosolutions/bn-frontend:latest
+    volumes:
+    - /home/projects/hydrosatniger/data:/usr/share/nginx/html/static
+    labels:
+      - "traefik.port=80"
+      - "traefik.backend=bn-frontend"
+      - "traefik.frontend.rule=Host:hydrosatniger.pigeosolutions.fr"

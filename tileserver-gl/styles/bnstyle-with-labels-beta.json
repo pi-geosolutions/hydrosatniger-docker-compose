@@ -1,0 +1,46 @@
+{
+  "version": 8,
+  "name": "bassin-niger",
+  "metadata": {},
+  "center": [5.843436665555828, 13.043031283679142],
+  "zoom": 4.864924912420324,
+  "sources": {
+    "bn-rivers": {
+      "type": "vector",
+      "url": "mbtiles://{bn-rivers}"
+    }
+  },
+  "glyphs": "{fontstack}/{range}.pbf",
+  "layers": [
+        {
+            "id": "bn-rivers",
+            "type": "line",
+            "source": "bn-rivers",
+            "source-layer": "bnrivers",
+            "layout": {},
+            "paint": {"line-color": "hsl(263, 100%, 61%)", "line-width": 2}
+        },
+{
+            "id": "river-label",
+            "type": "symbol",
+            "source": "bn-rivers",
+            "source-layer": "bnrivers",
+            "minzoom": 2,
+            "layout": {
+                "text-field": "{river}",
+                "text-size": 40,
+                "text-max-angle": 30,
+                "symbol-placement": "line",
+                "text-padding": 10,
+                "text-rotation-alignment": "map",
+                "text-pitch-alignment": "viewport"
+            },
+            "paint": {
+                "text-color": "hsl(263, 100%, 61%)",
+                "text-halo-color": "hsla(0, 0%, 100%, 0.95)",
+                "text-halo-width": 1
+            }
+        }
+  ],
+  "id": "x2veg69jm"
+}
