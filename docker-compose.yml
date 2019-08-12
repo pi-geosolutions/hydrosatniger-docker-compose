@@ -37,11 +37,6 @@ services:
     - /home/projects/hydrosatniger/sshd/authorized_keys:/etc/authorized_keys
     ports:
       - 2262:22/tcp
-    labels:
-      - "traefik.port=22"
-      - "traefik.protocol=tcp"
-      - "traefik.backend=ssh"
-      - "traefik.frontend.rule=Host:hydrosatniger.pigeosolutions.fr"
   tileserver-gl:
     image: klokantech/tileserver-gl:v3
     volumes:
@@ -60,3 +55,19 @@ services:
       - "traefik.port=80"
       - "traefik.backend=bn-frontend"
       - "traefik.frontend.rule=Host:hydrosatniger.pigeosolutions.fr"
+  syncthing:
+    image: linuxserver/syncthing
+    environment:
+      - PGID=999
+      - PUID=999
+      - UMASK_SET= 002
+    volumes:
+      - /home/projects/hydrosatniger/ftp_data:/mnt/ftp_data/
+      - /home/projects/hydrosatniger/data:/mnt/data/
+      - ./syncthing_config:/config
+    ports:
+      - 8384:8384
+      - 22000:22000
+      - 21027:21027/udp
+    restart: unless-stopped
+
