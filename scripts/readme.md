@@ -20,19 +20,24 @@ run the script inside the container.
 
 This can be programmed in cron, for instance to run every day at midnight UTC:
 ```
-00 00 * * * /home/projects/ird-bn/scripts/recompute_stations.sh > /home/projects/ird-bn/scripts/stationsUpdate.log 2>&1
+00 00 * * * /home/projects/ird-bn/scripts/recompute_stations.sh > /home/projects/ird-bn/scripts/stations_update.log 2>&1
 ```
 (adjust the paths if necessary)
 
 **update research data**
 
-This is done using the bash script watchForStationUpdate.sh. The main purpose
+This is done using the bash script watch_for_station_update.sh. The main purpose
 of this script is to watch for new files (but not too new as we want to make
 sure the transfer is complete) on the ftp_data folder. When there are new data,
 it runs a rsync command to copy the data to the data directory, which will be
 used by the bn_backend service.
 It also launches the recompute_stations.sh to reprocess the files (stations
 list, thumbnails, etc)
+
+Intended to be run in cron task like :
+```
+*/5 * * * * /home/projects/ird-bn/scripts/watch_for_station_update.sh > /home/projects/ird-bn/scripts/stations_update.log 2>&1
+```
 
 **synchronize data between 2 servers**
 
