@@ -13,10 +13,20 @@ services:
       - 22000:22000
     networks:
       - net1
+    restart: unless-stopped
+    depends_on:
+      - "bn-frontend"
+      - "bn-backend"
+      - "tileserver-gl"
+      - "syncthing"
+
   bn-frontend:
-    image: pigeosolutions/bn-frontend:latest
+    image: pigeosolutions/bn-frontend:20190813-ccd8377b
+    environment:
+      HOSTNAME: hydrosatniger.pigeosolutions.fr
     volumes:
     - ./data:/usr/share/nginx/html/static
+    restart: unless-stopped
     networks:
       net1:
         aliases:
@@ -31,6 +41,7 @@ services:
     - ./backend/conf:/conf
     - ./data:/mnt/data
     - ./ftp_data:/mnt/ftp_data
+    restart: unless-stopped
     networks:
       net1:
         aliases:
@@ -39,6 +50,7 @@ services:
     image: klokantech/tileserver-gl:v3
     volumes:
     - ./tileserver-gl:/data
+    restart: unless-stopped
     networks:
       net1:
         aliases:
@@ -46,13 +58,14 @@ services:
   ssh:
     image: mopnaej/sshd-compact:latest
     environment:
-      SSH_USERS: jpommier:1000:2000, ird:1001:2000
+      SSH_USERS: jpommier:1000:999, ird:1001:999
       PROJECTID: hydroweb-abn
     volumes:
     - ./sshd/config:/etc/ssh
     - ./sshd/authorized_keys:/etc/authorized_keys
     - ./sshd/home:/home
     - ./ftp_data:/ftp_data/
+    restart: unless-stopped
     networks:
       net1:
         aliases:
@@ -60,8 +73,8 @@ services:
   syncthing:
     image: linuxserver/syncthing
     environment:
-      - PGID=1000
-      - PUID=1000
+      - PGID=999
+      - PUID=999
       - UMASK_SET= 002
     volumes:
       - ./ftp_data:/mnt/ftp_data/
